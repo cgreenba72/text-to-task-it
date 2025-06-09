@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { TaskList } from "@/components/TaskList";
 import { AddTaskForm } from "@/components/AddTaskForm";
-import { SMSIntegration } from "@/components/SMSIntegration";
+import { Settings } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Plus, Settings as SettingsIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export interface Task {
@@ -58,19 +59,28 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-            My Tasks
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Organize your work and life with ease
-          </p>
+        <div className="flex justify-between items-center mb-8">
+          <div className="text-center flex-1">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              My Tasks
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Organize your work and life with ease
+            </p>
+          </div>
+          
+          {/* Settings Button */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="shrink-0">
+                <SettingsIcon className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[400px] sm:w-[540px]">
+              <Settings onTaskReceived={addTask} />
+            </SheetContent>
+          </Sheet>
         </div>
-
-        {/* SMS Integration Card */}
-        <Card className="mb-8 p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0">
-          <SMSIntegration onTaskReceived={addTask} />
-        </Card>
 
         {/* Add Task Button */}
         <div className="flex justify-center mb-8">
