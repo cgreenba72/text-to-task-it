@@ -36,6 +36,7 @@ const Index = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('work');
   const { toast } = useToast();
 
   // Fetch tasks from Supabase
@@ -283,19 +284,19 @@ const Index = () => {
         {/* Add Task Button */}
         <div className="flex justify-center mb-8">
           <Button 
-            onClick={() => setShowAddForm(true)}
+            onClick={() => setShowAddForm(!showAddForm)}
             size="lg"
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
           >
             <Plus className="mr-2 h-5 w-5" />
-            Add New Task
+            {showAddForm ? 'Cancel' : 'Add New Task'}
           </Button>
         </div>
 
-        {/* Add Task Form Modal */}
+        {/* Inline Add Task Form */}
         {showAddForm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-md p-6 bg-white">
+          <div className="mb-8 flex justify-center">
+            <Card className="w-full max-w-md p-6 bg-white shadow-lg">
               <AddTaskForm 
                 onAddTask={addTask}
                 onCancel={() => setShowAddForm(false)}
@@ -318,7 +319,7 @@ const Index = () => {
         )}
 
         {/* Task Categories */}
-        <Tabs defaultValue="work" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/60 backdrop-blur-sm">
             <TabsTrigger 
               value="work" 
