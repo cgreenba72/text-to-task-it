@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +60,13 @@ const Index = () => {
           variant: "destructive",
         });
       } else {
-        setTasks(data || []);
+        // Type assertion to ensure proper types from database
+        const typedTasks = (data || []).map(task => ({
+          ...task,
+          category: task.category as 'work' | 'life',
+          priority: task.priority as 'low' | 'medium' | 'high'
+        }));
+        setTasks(typedTasks);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -93,7 +98,13 @@ const Index = () => {
           variant: "destructive",
         });
       } else {
-        setTasks(prev => [data, ...prev]);
+        // Type assertion for the new task
+        const typedTask = {
+          ...data,
+          category: data.category as 'work' | 'life',
+          priority: data.priority as 'low' | 'medium' | 'high'
+        };
+        setTasks(prev => [typedTask, ...prev]);
         setShowAddForm(false);
         toast({
           title: "Task added successfully!",
@@ -124,8 +135,14 @@ const Index = () => {
           variant: "destructive",
         });
       } else {
+        // Type assertion for the updated task
+        const typedTask = {
+          ...data,
+          category: data.category as 'work' | 'life',
+          priority: data.priority as 'low' | 'medium' | 'high'
+        };
         setTasks(prev => prev.map(task => 
-          task.id === id ? data : task
+          task.id === id ? typedTask : task
         ));
         setEditingTask(null);
         toast({
