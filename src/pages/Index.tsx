@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { TaskList } from "@/components/TaskList";
 import { AddTaskForm } from "@/components/AddTaskForm";
+import { EditTaskForm } from "@/components/EditTaskForm";
 import { Settings } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,6 +24,7 @@ export interface Task {
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const { toast } = useToast();
 
   const addTask = (taskData: Omit<Task, 'id' | 'createdAt'>) => {
@@ -39,6 +41,17 @@ const Index = () => {
     });
   };
 
+  const updateTask = (id: string, updatedTask: Omit<Task, 'id' | 'createdAt'>) => {
+    setTasks(prev => prev.map(task => 
+      task.id === id ? { ...task, ...updatedTask } : task
+    ));
+    setEditingTask(null);
+    toast({
+      title: "Task updated successfully!",
+      description: `"${updatedTask.title}" has been updated.`,
+    });
+  };
+
   const toggleTask = (id: string) => {
     setTasks(prev => prev.map(task => 
       task.id === id ? { ...task, completed: !task.completed } : task
@@ -51,6 +64,13 @@ const Index = () => {
       title: "Task deleted",
       description: "The task has been removed from your list.",
     });
+  };
+
+  const editTask = (id: string) => {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      setEditingTask(task);
+    }
   };
 
   const workTasks = tasks.filter(task => task.category === 'work');
@@ -107,6 +127,19 @@ const Index = () => {
           </div>
         )}
 
+        {/* Edit Task Form Modal */}
+        {editingTask && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md p-6 bg-white">
+              <EditTaskForm 
+                task={editingTask}
+                onUpdateTask={updateTask}
+                onCancel={() => setEditingTask(null)}
+              />
+            </Card>
+          </div>
+        )}
+
         {/* Task Categories */}
         <Tabs defaultValue="work" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/60 backdrop-blur-sm">
@@ -129,6 +162,7 @@ const Index = () => {
               tasks={workTasks}
               onToggleTask={toggleTask}
               onDeleteTask={deleteTask}
+              onEditTask={editTask}
               category="work"
             />
           </TabsContent>
@@ -138,6 +172,7 @@ const Index = () => {
               tasks={lifeTasks}
               onToggleTask={toggleTask}
               onDeleteTask={deleteTask}
+              onEditTask={editTask}
               category="life"
             />
           </TabsContent>

@@ -6,10 +6,11 @@ interface TaskListProps {
   tasks: Task[];
   onToggleTask: (id: string) => void;
   onDeleteTask: (id: string) => void;
+  onEditTask: (id: string) => void;
   category: 'work' | 'life';
 }
 
-export const TaskList = ({ tasks, onToggleTask, onDeleteTask, category }: TaskListProps) => {
+export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask, category }: TaskListProps) => {
   const completedTasks = tasks.filter(task => task.completed);
   const incompleteTasks = tasks.filter(task => !task.completed);
 
@@ -44,6 +45,7 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, category }: TaskLi
                 task={task}
                 onToggle={onToggleTask}
                 onDelete={onDeleteTask}
+                onEdit={onEditTask}
               />
             ))}
           </div>
@@ -63,6 +65,7 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, category }: TaskLi
                 task={task}
                 onToggle={onToggleTask}
                 onDelete={onDeleteTask}
+                onEdit={onEditTask}
               />
             ))}
           </div>

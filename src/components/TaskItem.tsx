@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { X, CalendarIcon } from "lucide-react";
+import { X, CalendarIcon, Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format, isToday, isTomorrow, isPast } from "date-fns";
 
@@ -12,9 +12,10 @@ interface TaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
-export const TaskItem = ({ task, onToggle, onDelete }: TaskItemProps) => {
+export const TaskItem = ({ task, onToggle, onDelete, onEdit }: TaskItemProps) => {
   const priorityColors = {
     low: "bg-green-100 text-green-800 hover:bg-green-200",
     medium: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
@@ -81,14 +82,24 @@ export const TaskItem = ({ task, onToggle, onDelete }: TaskItemProps) => {
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onDelete(task.id)}
-          className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onEdit(task.id)}
+            className="text-muted-foreground hover:text-primary h-8 w-8 p-0"
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onDelete(task.id)}
+            className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </Card>
   );
