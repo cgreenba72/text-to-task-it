@@ -40,6 +40,7 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
     let category: 'work' | 'life' = 'work';
     let priority: 'low' | 'medium' | 'high' = 'medium';
     let title = text;
+    let dueDate: Date | undefined;
 
     // Check for category keywords
     if (text.toLowerCase().includes('life') || text.toLowerCase().includes('personal') || text.toLowerCase().includes('home')) {
@@ -53,9 +54,17 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
       priority = 'low';
     }
 
-    // Clean up the title by removing category and priority keywords
+    // Check for date keywords
+    const today = new Date();
+    if (text.toLowerCase().includes('today')) {
+      dueDate = today;
+    } else if (text.toLowerCase().includes('tomorrow')) {
+      dueDate = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    }
+
+    // Clean up the title by removing category, priority, and date keywords
     title = title
-      .replace(/\b(work|life|personal|home|urgent|important|asap|low|high|medium|whenever)\b/gi, '')
+      .replace(/\b(work|life|personal|home|urgent|important|asap|low|high|medium|whenever|today|tomorrow)\b/gi, '')
       .replace(/\s+/g, ' ')
       .trim();
 
@@ -65,6 +74,7 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
         category,
         priority,
         completed: false,
+        dueDate,
       });
 
       setSimulateText("");
@@ -128,7 +138,7 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
                 <Input
                   value={simulateText}
                   onChange={(e) => setSimulateText(e.target.value)}
-                  placeholder="e.g., 'Urgent: Buy groceries for dinner'"
+                  placeholder="e.g., 'Urgent: Buy groceries today'"
                   onKeyDown={(e) => e.key === 'Enter' && simulateSMS()}
                 />
                 <Button
@@ -139,7 +149,7 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Keywords: "work", "life", "urgent", "low priority"
+                Keywords: "work", "life", "urgent", "low priority", "today", "tomorrow"
               </p>
             </div>
           </div>

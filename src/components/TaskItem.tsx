@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { X, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { format, isToday, isTomorrow, isPast } from "date-fns";
 
 interface TaskItemProps {
   task: Task;
@@ -21,6 +22,29 @@ export const TaskItem = ({ task, onToggle, onDelete }: TaskItemProps) => {
   };
 
   const categoryEmoji = task.category === 'work' ? '💼' : '🏠';
+
+  const getDueDateDisplay = () => {
+    if (!task.dueDate) return null;
+
+    const isOverdue = isPast(task.dueDate) && !isToday(task.dueDate);
+    const dueDateText = isToday(task.dueDate) 
+      ? "Today" 
+      : isTomorrow(task.dueDate) 
+        ? "Tomorrow" 
+        : format(task.dueDate, "MMM d");
+
+    return (
+      <div className={cn(
+        "flex items-center gap-1 text-xs px-2 py-1 rounded-full",
+        isOverdue && !task.completed 
+          ? "bg-red-100 text-red-800" 
+          : "bg-blue-100 text-blue-800"
+      )}>
+        <CalendarIcon className="h-3 w-3" />
+        {dueDateText}
+      </div>
+    );
+  };
 
   return (
     <Card className={cn(
@@ -46,10 +70,11 @@ export const TaskItem = ({ task, onToggle, onDelete }: TaskItemProps) => {
             </span>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge className={priorityColors[task.priority]}>
               {task.priority} priority
             </Badge>
+            {getDueDateDisplay()}
             <span className="text-xs text-muted-foreground">
               {task.createdAt.toLocaleDateString()}
             </span>

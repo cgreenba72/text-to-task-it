@@ -1,10 +1,15 @@
 
 import { useState } from "react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
 import { Task } from "@/pages/Index";
+import { cn } from "@/lib/utils";
 
 interface AddTaskFormProps {
   onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
@@ -15,6 +20,7 @@ export const AddTaskForm = ({ onAddTask, onCancel }: AddTaskFormProps) => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<'work' | 'life'>('work');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [dueDate, setDueDate] = useState<Date | undefined>();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,11 +31,13 @@ export const AddTaskForm = ({ onAddTask, onCancel }: AddTaskFormProps) => {
       category,
       priority,
       completed: false,
+      dueDate,
     });
 
     setTitle("");
     setCategory('work');
     setPriority('medium');
+    setDueDate(undefined);
   };
 
   return (
@@ -74,6 +82,34 @@ export const AddTaskForm = ({ onAddTask, onCancel }: AddTaskFormProps) => {
               <SelectItem value="high">🔴 High</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="dueDate">Due Date (Optional)</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full mt-1 justify-start text-left font-normal",
+                  !dueDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {dueDate ? format(dueDate, "PPP") : <span>Pick a due date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={dueDate}
+                onSelect={setDueDate}
+                disabled={(date) => date < new Date()}
+                initialFocus
+                className="p-3 pointer-events-auto"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="flex gap-2 pt-4">

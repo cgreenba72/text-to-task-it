@@ -17,6 +17,7 @@ export interface Task {
   priority: 'low' | 'medium' | 'high';
   completed: boolean;
   createdAt: Date;
+  dueDate?: Date;
 }
 
 const Index = () => {
