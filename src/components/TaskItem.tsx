@@ -25,14 +25,15 @@ export const TaskItem = ({ task, onToggle, onDelete, onEdit }: TaskItemProps) =>
   const categoryEmoji = task.category === 'work' ? '💼' : '🏠';
 
   const getDueDateDisplay = () => {
-    if (!task.dueDate) return null;
+    if (!task.due_date) return null;
 
-    const isOverdue = isPast(task.dueDate) && !isToday(task.dueDate);
-    const dueDateText = isToday(task.dueDate) 
+    const dueDate = new Date(task.due_date);
+    const isOverdue = isPast(dueDate) && !isToday(dueDate);
+    const dueDateText = isToday(dueDate) 
       ? "Today" 
-      : isTomorrow(task.dueDate) 
+      : isTomorrow(dueDate) 
         ? "Tomorrow" 
-        : format(task.dueDate, "MMM d");
+        : format(dueDate, "MMM d");
 
     return (
       <div className={cn(
@@ -77,7 +78,7 @@ export const TaskItem = ({ task, onToggle, onDelete, onEdit }: TaskItemProps) =>
             </Badge>
             {getDueDateDisplay()}
             <span className="text-xs text-muted-foreground">
-              {task.createdAt.toLocaleDateString()}
+              {new Date(task.created_at).toLocaleDateString()}
             </span>
           </div>
         </div>

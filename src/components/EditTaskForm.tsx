@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 interface EditTaskFormProps {
   task: Task;
-  onUpdateTask: (id: string, updatedTask: Omit<Task, 'id' | 'createdAt'>) => void;
+  onUpdateTask: (id: string, updatedTask: Omit<Task, 'id' | 'created_at' | 'user_id'>) => void;
   onCancel: () => void;
 }
 
@@ -21,7 +21,9 @@ export const EditTaskForm = ({ task, onUpdateTask, onCancel }: EditTaskFormProps
   const [title, setTitle] = useState(task.title);
   const [category, setCategory] = useState<'work' | 'life'>(task.category);
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(task.priority);
-  const [dueDate, setDueDate] = useState<Date | undefined>(task.dueDate);
+  const [dueDate, setDueDate] = useState<Date | undefined>(
+    task.due_date ? new Date(task.due_date) : undefined
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ export const EditTaskForm = ({ task, onUpdateTask, onCancel }: EditTaskFormProps
       category,
       priority,
       completed: task.completed,
-      dueDate,
+      due_date: dueDate ? dueDate.toISOString() : undefined,
     });
   };
 

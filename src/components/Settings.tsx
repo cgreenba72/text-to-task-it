@@ -9,7 +9,7 @@ import { Task } from "@/pages/Index";
 import { useToast } from "@/hooks/use-toast";
 
 interface SettingsProps {
-  onTaskReceived: (task: Omit<Task, 'id' | 'createdAt'>) => void;
+  onTaskReceived: (task: Omit<Task, 'id' | 'created_at' | 'user_id'>) => void;
 }
 
 export const Settings = ({ onTaskReceived }: SettingsProps) => {
@@ -40,7 +40,7 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
     let category: 'work' | 'life' = 'work';
     let priority: 'low' | 'medium' | 'high' = 'medium';
     let title = text;
-    let dueDate: Date | undefined;
+    let dueDate: string | undefined;
 
     // Check for category keywords
     if (text.toLowerCase().includes('life') || text.toLowerCase().includes('personal') || text.toLowerCase().includes('home')) {
@@ -57,9 +57,10 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
     // Check for date keywords
     const today = new Date();
     if (text.toLowerCase().includes('today')) {
-      dueDate = today;
+      dueDate = today.toISOString();
     } else if (text.toLowerCase().includes('tomorrow')) {
-      dueDate = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+      const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+      dueDate = tomorrow.toISOString();
     }
 
     // Clean up the title by removing category, priority, and date keywords
@@ -74,7 +75,7 @@ export const Settings = ({ onTaskReceived }: SettingsProps) => {
         category,
         priority,
         completed: false,
-        dueDate,
+        due_date: dueDate,
       });
 
       setSimulateText("");

@@ -26,8 +26,8 @@ export interface Task {
   category: 'work' | 'life';
   priority: 'low' | 'medium' | 'high';
   completed: boolean;
-  created_at: Date;
-  due_date?: Date;
+  created_at: string;
+  due_date?: string;
   user_id: string;
 }
 
@@ -79,6 +79,7 @@ const Index = () => {
         .insert([
           {
             ...taskData,
+            due_date: taskData.due_date || null,
             user_id: user.id,
           }
         ])
@@ -108,7 +109,10 @@ const Index = () => {
     try {
       const { data, error } = await supabase
         .from('tasks')
-        .update(updatedTask)
+        .update({
+          ...updatedTask,
+          due_date: updatedTask.due_date || null,
+        })
         .eq('id', id)
         .select()
         .single();

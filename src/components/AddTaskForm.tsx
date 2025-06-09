@@ -12,7 +12,7 @@ import { Task } from "@/pages/Index";
 import { cn } from "@/lib/utils";
 
 interface AddTaskFormProps {
-  onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
+  onAddTask: (task: Omit<Task, 'id' | 'created_at' | 'user_id'>) => void;
   onCancel: () => void;
 }
 
@@ -31,7 +31,7 @@ export const AddTaskForm = ({ onAddTask, onCancel }: AddTaskFormProps) => {
       category,
       priority,
       completed: false,
-      dueDate,
+      due_date: dueDate ? dueDate.toISOString() : undefined,
     });
 
     setTitle("");
